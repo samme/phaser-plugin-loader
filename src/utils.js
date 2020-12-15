@@ -40,8 +40,12 @@ export const getSceneKeyForLoader = function (loader) {
   return getSceneKey(loader.scene);
 };
 
+export const filePercentToText = function (file, precision) {
+  return file.percentComplete >= 0 ? percent(file.percentComplete, precision) : '-';
+};
+
 export const fileToText = function (file) {
-  return `${file.key} ${(file.percentComplete >= 0) ? percent(file.percentComplete) : '-'} (${getFileState(file.state)})`;
+  return `${file.key} ${filePercentToText(file)} (${getFileState(file.state)})`;
 };
 
 export const loaderToText = function (loader) {
