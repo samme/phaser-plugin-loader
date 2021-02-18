@@ -1,7 +1,7 @@
 {
   "name": "phaser-plugin-loader",
   "description": "A collection of small Phaser 3 loader plugins to help your development",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "main": "dist/phaser-plugin-loader.umd.js",
   "module": "dist/phaser-plugin-loader.esm.js",
   "browser": "dist/phaser-plugin-loader.umd.js",

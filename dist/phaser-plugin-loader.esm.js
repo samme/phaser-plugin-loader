@@ -61,17 +61,13 @@ var getSceneKeyForLoader = function (loader) {
   return getSceneKey(loader.scene);
 };
 
-var fileToText = function (file) {
-  return ((file.key) + " " + ((file.percentComplete >= 0) ? percent(file.percentComplete) : '-') + " (" + (getFileState(file.state)) + ")");
-};
-
-var loaderToText = function (loader) {
+var loaderToLogText = function (loader) {
   return ("Loader (" + (getSceneKeyForLoader(loader)) + ") (" + (getLoaderState(loader.state)) + ") total: " + (loader.totalToLoad) + " | to load: " + (loader.list.size) + " | loading: " + (loader.inflight.size) + " | to process: " + (loader.queue.size) + " | complete: " + (loader.totalComplete) + " | failed: " + (loader.totalFailed));
 };
 
 var logLoader = function (loader) {
   // eslint-disable-next-line no-console
-  console.log(loaderToText(loader));
+  console.log(loaderToLogText(loader));
 };
 
 /* eslint-disable no-console */
@@ -249,11 +245,52 @@ var LoaderBarPlugin = /*@__PURE__*/(function (superclass) {
   return LoaderBarPlugin;
 }(Phaser.Plugins.ScenePlugin));
 
-var ref$6 = Phaser.Loader.Events;
-var COMPLETE$3 = ref$6.COMPLETE;
-var POST_PROCESS$2 = ref$6.POST_PROCESS;
-var PROGRESS$2 = ref$6.PROGRESS;
-var START$3 = ref$6.START;
+var ref$6 = Phaser.Math;
+var Clamp = ref$6.Clamp;
+var ref$1$1 = Phaser.Utils.String;
+var Pad = ref$1$1.Pad;
+var EMPTY_PERCENT = '    ';
+var NUM_SHADES = 5;
+var PAD_LEFT = 1;
+var PERCENT_STRING_LENGTH = 4;
+var SPACE = ' ';
+
+var SHADES = {
+  0: '░░░░░',
+  1: '▓░░░░',
+  2: '▓▓░░░',
+  3: '▓▓▓░░',
+  4: '▓▓▓▓░',
+  5: '▓▓▓▓▓'
+};
+
+var getShade = function (amount) {
+  amount = Clamp(Math.round(NUM_SHADES * amount), 0, NUM_SHADES);
+
+  return SHADES[amount];
+};
+
+var filePercentToText = function (file) {
+  return file.percentComplete >= 0 ? padPercent(file.percentComplete) : EMPTY_PERCENT;
+};
+
+var padPercent = function (val) {
+  return Pad(percent(val), PERCENT_STRING_LENGTH, SPACE, PAD_LEFT);
+};
+
+var fileToText = function (file) {
+  return ((getShade(file.percentComplete)) + " " + (filePercentToText(file)) + " " + (file.key) + " (" + (getFileState(file.state)) + ")");
+};
+
+var loaderToText = function (loader) {
+  return ((getShade(loader.progress)) + " " + (padPercent(loader.progress)) + " (" + (getLoaderState(loader.state)) + ")");
+};
+
+var ref$7 = Phaser.Loader.Events;
+var COMPLETE$3 = ref$7.COMPLETE;
+var POST_PROCESS$2 = ref$7.POST_PROCESS;
+var PROGRESS$2 = ref$7.PROGRESS;
+var START$3 = ref$7.START;
 
 var textHandlers = {};
 textHandlers[COMPLETE$3] = function () {
@@ -261,14 +298,14 @@ textHandlers[COMPLETE$3] = function () {
       this.view = null;
     };
 textHandlers[POST_PROCESS$2] = function () {
-      this.view.setText(['Processing …']);
+      this.view.setText('Processing …');
     };
-textHandlers[PROGRESS$2] = function (progress) {
+textHandlers[PROGRESS$2] = function () {
       var ref = this.systems;
       var load = ref.load;
 
       this.view.setText([
-        ("Loading " + (percent(progress, 0))),
+        loaderToText(load),
         '' ].concat( getFiles(load).map(fileToText)
       ));
     };
@@ -279,8 +316,8 @@ textHandlers[START$3] = function (loader) {
       ));
     };
 
-var ref$7 = Phaser.Scenes.Events;
-var DESTROY$3 = ref$7.DESTROY;
+var ref$8 = Phaser.Scenes.Events;
+var DESTROY$3 = ref$8.DESTROY;
 
 var LoaderTextPlugin = /*@__PURE__*/(function (superclass) {
   function LoaderTextPlugin () {
