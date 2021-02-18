@@ -40,19 +40,11 @@ export const getSceneKeyForLoader = function (loader) {
   return getSceneKey(loader.scene);
 };
 
-export const filePercentToText = function (file, precision) {
-  return file.percentComplete >= 0 ? percent(file.percentComplete, precision) : '-';
-};
-
-export const fileToText = function (file) {
-  return `${file.key} ${filePercentToText(file)} (${getFileState(file.state)})`;
-};
-
-export const loaderToText = function (loader) {
+export const loaderToLogText = function (loader) {
   return `Loader (${getSceneKeyForLoader(loader)}) (${getLoaderState(loader.state)}) total: ${loader.totalToLoad} | to load: ${loader.list.size} | loading: ${loader.inflight.size} | to process: ${loader.queue.size} | complete: ${loader.totalComplete} | failed: ${loader.totalFailed}`;
 };
 
 export const logLoader = function (loader) {
   // eslint-disable-next-line no-console
-  console.log(loaderToText(loader));
+  console.log(loaderToLogText(loader));
 };

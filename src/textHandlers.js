@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
-
-import { fileToText, getFiles, percent } from './utils';
+import { getFiles } from './utils';
+import { fileToText, loaderToText } from './textUtils';
 
 const { COMPLETE, POST_PROCESS, PROGRESS, START } = Phaser.Loader.Events;
 
@@ -12,14 +12,14 @@ const textHandlers = {
     },
   [POST_PROCESS]:
     function () {
-      this.view.setText(['Processing …']);
+      this.view.setText('Processing …');
     },
   [PROGRESS]:
-    function (progress) {
+    function () {
       const { load } = this.systems;
 
       this.view.setText([
-        `Loading ${percent(progress, 0)}`,
+        loaderToText(load),
         '',
         ...getFiles(load).map(fileToText)
       ]);
