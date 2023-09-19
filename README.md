@@ -3,7 +3,7 @@ Phaser 3 Loader Plugins
 
 A collection of small loader plugins to help your development.
 
-Examples: [audio player](https://codepen.io/samme/pen/NWPbQJY), [Spine](https://codepen.io/samme/pen/MWaPrEL), [load multiatlas](https://codepen.io/samme/pen/eYBJbLX).
+See [examples](https://codepen.io/collection/BNxZzx).
 
 Loader Bar Plugin
 -----------------
